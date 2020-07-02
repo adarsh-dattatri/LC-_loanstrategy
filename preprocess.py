@@ -66,6 +66,38 @@ def emp_length_to_numeric(df):
     return df
 
 
+def vintage_selection_for_modeling(df):
+    """selects vintages to keep in the dataset
+
+    Args:
+        df (pandas df): [description]
+
+    Returns:
+        pandas df: dataset after selection
+    """
+
+    is_mature_36_months = (df['issue_d_date'].dt.year < 2018) & (df['term'] == ' 36 months')
+    is_mature_60_months = (df['issue_d_date'].dt.year < 2016) & (df['term'] == ' 60 months')
+    df = df[is_mature_36_months|is_mature_60_months]
+    return df
+
+def good_bad_definition(target):
+    """assigns good bad status to loans
+
+    Args:
+        target (pd.Series): contains target values
+
+    Returns:
+        pd.Series: contains good and bad labels (good = 1, bad = 0)
+    """
+
+
+    bads = ['Charged Off','Default','Does not meet the credit policy. Status:Charged Off','Late (31-120 days)']
+    target_good_bad = np.where(target.isin(bads),0,1)
+    return target_good_bad
+
+
+
 
 
 
